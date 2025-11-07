@@ -10,9 +10,9 @@ import { FaCommentMedical } from "react-icons/fa";
 export default function Header() {
   const [scrolled, setScrolled] = useState(false);
 
-    useEffect(() => {
+  useEffect(() => {
     const handleScroll = () => {
-      setScrolled(window.scrollY > 50); 
+      setScrolled(window.scrollY > 50);
     };
 
     window.addEventListener("scroll", handleScroll);
@@ -23,7 +23,7 @@ export default function Header() {
     <header
       className={`fixed border-bottom border-gray-400 top-0 left-0 w-full z-50 border-b transition-all duration-300 ${
         scrolled
-           ? "bg-linear-to-r from-[#1E2433]/90 via-[#3D2F78]/90 to-[#1E2433]/90 border-[#2B3142] backdrop-blur-md"
+          ? "bg-linear-to-r from-[#1E2433]/90 via-[#3D2F78]/90 to-[#1E2433]/90 border-[#2B3142] backdrop-blur-md"
           : "bg-transparent "
       }`}
     >
@@ -60,7 +60,7 @@ export default function Header() {
         </nav>
 
         <Link href="">
-          <Button className="bg-[#7C3AED] hover:bg-[#6D28D9] text-white flex items-center gap-2 px-4 py-2 rounded-lg text-sm font-semibold transition-all duration-300 shadow-md">
+          <Button className="bg-[#7C3AED] hover:bg-[#6D28D9] text-white flex items-center gap-2 px-5 py-2 rounded-lg text-md font-semibold transition-all duration-300 shadow-md">
             <FaCommentMedical className="w-3 h-3 text-white" />
             <span>Try Beta Free</span>
           </Button>

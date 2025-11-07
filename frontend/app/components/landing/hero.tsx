@@ -28,7 +28,7 @@ const Hero = () => {
 
       <div className="container relative z-10 mx-auto max-w-4xl text-center">
         {/* Avatars */}
-        <div className="flex items-center justify-center gap-2 mb-6 border border-white px-4 py-2 rounded-xl mx-auto max-w-xs">
+        <div className="flex items-center justify-center gap-2 mb-6 border border-gray-400 px-4 py-2 rounded-xl mx-auto max-w-xs">
       {/* Avatar Group */}
       <div className="flex -space-x-2">
         {avatars.map((avatar) => (
@@ -59,7 +59,7 @@ const Hero = () => {
         </h1>
 
         {/* Subheadline */}
-        <p className="text-lg md:text-xl text-muted-foreground mb-8 max-w-3xl mx-auto text-white">
+        <p className="text-lg md:text-xl  mb-8 max-w-3xl mx-auto text-white">
           Clarity Cosmos gives you a personal mentor layer on top of the
           internet — guiding you with hyper-personalized roadmap videos, your
           favorite avatar, and interactive chat.
@@ -68,13 +68,13 @@ const Hero = () => {
         {/* CTA Buttons */}
         <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
           <Link href="">
-            <Button className="bg-[#7C3AED] hover:bg-[#6D28D9] text-white flex items-center gap-2 px-4 py-2 rounded-lg text-sm font-semibold transition-all duration-300 shadow-md">
+            <Button className="bg-[#7C3AED] hover:bg-[#6D28D9] text-white flex items-center gap-2 px-5 py-2 rounded-lg text-md font-semibold transition-all duration-300 shadow-md">
               <FaCommentMedical className="w-3 h-3 text-white" />
               <span>Try Beta Free</span>
             </Button>
           </Link>
           <Link href="">
-            <Button className="bg-[#7C3AED] hover:bg-[#6D28D9] text-white flex items-center gap-2 px-4 py-2 rounded-lg text-sm font-semibold transition-all duration-300 shadow-md">
+            <Button className="bg-[#7C3AED] hover:bg-[#6D28D9] text-white flex items-center gap-2 px-5 py-2 rounded-lg text-md font-semibold transition-all duration-300 shadow-md">
               <FaPlay className="w-3 h-3 text-white" />
               <span>Try Beta Free</span>
             </Button>
