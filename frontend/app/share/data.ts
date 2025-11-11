@@ -1,20 +1,18 @@
-import { ROUTES, RouteValue } from "./route";
 import { FiFileText, FiGlobe, FiLink } from "react-icons/fi";
 
 
 export interface NavLink {
   label: string;
-  href: RouteValue;
+  href: string;
 }
 
 export const NAV_LINKS: NavLink[] = [
-  { label: "Home", href: ROUTES.HOME },
-  { label: "Features", href: ROUTES.FEATURES },
-  { label: "Pricing", href: ROUTES.PRICING },
-  { label: "FAQs", href: ROUTES.FAQS },
-  { label: "Contact Us", href: ROUTES.CONTACT },
+  { label: "Home", href: "#hero" }, // scrolls to the hero section
+  { label: "Features", href: "#features" },
+  { label: "Pricing", href: "#pricing" },
+  { label: "FAQs", href: "#faqs" },
+  { label: "Contact Us", href: "#contact-us" },
 ];
-
 
 
 export const VISION_CARDS = [
