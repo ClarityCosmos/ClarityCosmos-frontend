@@ -1,8 +1,10 @@
 import Image from "next/image";
 import Button from "@/app/components/button";
 import { ASSETS } from "@/app/share/assets";
+import Link from "next/link";
 
 const Footer = () => {
+  // const privacyLink = ["Refund Policy", "Terms of Service", "Privacy Policy"];
   const quickLinks = ["Features", "Pricing", "FAQs", "Contact Us"];
   const services = ["AI Mentor", "AI Q&A"];
 
@@ -27,6 +29,26 @@ const Footer = () => {
               Empowering learners with clarity and guidance through AI-driven
               mentorship and interactive learning experiences.
             </p>
+          </div>
+          <div>
+            <h3 className="font-semibold mb-4 text-white">Privacy Links</h3>
+            <ul className="space-y-2">
+              <li>
+                <Link href="/refund" className="text-sm text-white/60 hover:text-white transition-colors">
+                  Refund Policy
+                </Link>
+              </li>
+              <li>
+                <Link href="/service" className="text-sm text-white/60 hover:text-white transition-colors">
+                  Terms of Service
+                </Link>
+              </li>
+              <li>
+                <Link href="/privacy" className="text-sm text-white/60 hover:text-white transition-colors">
+                  Privacy Policy
+                </Link>
+              </li>
+            </ul>
           </div>
 
           {/* Quick Links */}
@@ -69,6 +91,7 @@ const Footer = () => {
             <p className="text-sm text-white/70 mb-4">
               Ready upskill yourself!
             </p>
+
             <Button className="w-full bg-[#7C3AED] text-white font-medium rounded-xl py-2 hover:from-indigo-500 hover:to-purple-600 transition-all duration-300 shadow-md hover:shadow-purple-500/30">
               Get Started
             </Button>

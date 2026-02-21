@@ -1,52 +1,13 @@
-import Button from "@/app/components/button";
-import { FiCheck } from "react-icons/fi";
+import Button from "../button";
+import Link from "next/link";
 
 const Pricing = () => {
-  const plans = [
-    {
-      name: "Freemium",
-      subtitle: "Starter",
-      price: 0,
-      features: [
-        "3 videos / month",
-        "Text-based Q&A only",
-        "500 words/chat",
-      ],
-      cta: "Choose Plan",
-      popular: false,
-    },
-    {
-      name: "Starter",
-      subtitle: "for Students",
-      price: 20,
-      features: [
-        "6 video(s) / month",
-        "Video-based Q&A limits",
-        "700 words / chat",
-      ],
-      cta: "Choose Plan",
-      popular: true,
-    },
-    {
-      name: "Pro",
-      subtitle: "for Professionals",
-      price: 15,
-      features: [
-        "6 video(s) / month",
-        "Text-based Q&A only",
-        "Adjust learning pace conditions",
-        "1k words / call",
-      ],
-      cta: "Choose Plan",
-      popular: false,
-    },
-  ];
-
   return (
-    <section id="pricing" className="py-12 px-4">
+    <section id="pricing" className="px-4">
       <div className="container mx-auto max-w-6xl">
-        <div className="text-center mb-12">
-        <h2 className="text-3xl md:text-4xl lg:text-5xl font-bold mb-4 text-[#534dec]">
+        {/* Heading */}
+        <div className="text-center mb-10">
+          <h2 className="text-3xl md:text-4xl lg:text-5xl font-bold mb-4 text-[#534dec]">
             Pricing Plans
           </h2>
           <p className="text-white text-lg md:text-xl">
@@ -54,44 +15,91 @@ const Pricing = () => {
           </p>
         </div>
 
-      <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6">
-  {plans.map((plan, index) => (
-    <div
-      key={index}
-      className="p-6 sm:p-8 rounded-xl bg-[#292f3d] text-white border border-[#534dec] flex flex-col justify-between"
-    >
-      {/* Header */}
-      <div className="mb-4 sm:mb-6">
-        <h3 className="text-lg sm:text-xl font-bold mb-1">{plan.name}</h3>
-        <p className="text-sm sm:text-base text-muted-foreground">{plan.subtitle}</p>
-      </div>
+        {/* Cards Wrapper */}
+        <div className="min-h-[80vh] bg-[#111827] flex items-center justify-center px-4 py-16">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-8 max-w-6xl w-full place-items-center">
 
-      {/* Price */}
-      <div className="mb-4 sm:mb-6">
-        <span className="text-2xl sm:text-4xl font-bold">${plan.price}</span>
-        <span className="text-sm sm:text-base text-muted-foreground"> /month</span>
-      </div>
+            {/* ================= LEFT CARD ================= */}
+            <div className="relative w-full max-w-[380px] h-[460px] rounded-lg p-8 md:p-10 border-2 border-blue-500 bg-[#1A0E47]">
 
-      {/* Features */}
-      <ul className="space-y-2 sm:space-y-3 mb-6 sm:mb-8">
-        {plan.features.map((feature, featureIndex) => (
-          <li key={featureIndex} className="flex items-start gap-2">
-            <FiCheck className="w-4 sm:w-5 h-4 sm:h-5 text-primary shrink-0 mt-0.5" />
-            <span className="text-xs sm:text-sm">{feature}</span>
-          </li>
-        ))}
-      </ul>
+              <div className="flex justify-between items-center mb-6">
+                <h2 className="text-2xl font-bold text-blue-400 tracking-wide">
+                  EXPLORER
+                </h2>
+                <span className="text-5xl font-bold text-white">$0</span>
+              </div>
 
-      {/* Button */}
-      <Button
-        className="w-full h-10 sm:h-12 bg-[#534dec] rounded-lg hover:opacity-90 transition-opacity text-sm sm:text-base"
-      >
-        {plan.cta}
-      </Button>
-    </div>
-  ))}
-</div>
+              <ul className="space-y-5 md:space-y-6 text-white/90 mt-10 md:mt-12">
+                <li className="flex gap-3">
+                  <span className="text-blue-400 text-xl">▶</span>
+                  <span>15s roadmap preview</span>
+                </li>
 
+                <li className="flex gap-3">
+                  <span className="text-blue-400 text-xl">🏷</span>
+                  <span>
+                    10% lifetime discounts <br />
+                    on future premiums
+                  </span>
+                </li>
+              </ul>
+
+              <Link href="/auth/signin">
+                <Button className="absolute bottom-7 md:bottom-8 left-8 right-8 py-4 rounded-lg text-lg font-semibold text-white border-2 border-[#445CF8] bg-[#401CC2] hover:bg-[#4b25d6] transition">
+                  Explore For Free!
+                </Button>
+              </Link>
+            </div>
+
+            {/* ================= RIGHT CARD ================= */}
+            <div className="relative w-full max-w-[380px] h-[460px] rounded-lg p-8 md:p-10 border-2 border-[#A4B428] bg-gradient-to-b from-[rgba(191,22,233,0.8)] to-[rgba(64,28,194,0.8)]">
+
+              {/* Badge */}
+              <div className="absolute -top-1 left-1/4 -translate-x-1/2 bg-red-600 text-white text-sm px-6 py-1 font-semibold rounded shadow-lg">
+                5 slots left!
+              </div>
+
+              <div className="flex justify-between items-center mb-6">
+                <h2 className="text-[23px] font-bold text-green-400 tracking-wide">
+                  FOUNDING USER
+                </h2>
+                <span className="text-[40px] font-bold text-yellow-300">$1</span>
+              </div>
+
+              <ul className="space-y-4 md:space-y-5 text-white mt-6">
+                <li className="flex gap-3">
+                  <span className="text-green-400 text-xl">▶</span>
+                  <span>Full roadmap video</span>
+                </li>
+
+                <li className="flex gap-3">
+                  <span className="text-green-400 text-xl">📄</span>
+                  <span>PDF (downloadable)</span>
+                </li>
+
+                <li className="flex gap-3">
+                  <span className="text-green-400 text-xl">🏷</span>
+                  <span>
+                    50% lifetime discounts on <br />
+                    future premiums
+                  </span>
+                </li>
+
+                <li className="flex gap-3">
+                  <span className="text-green-400 text-xl">💬</span>
+                  <span>Direct feedback to the team</span>
+                </li>
+              </ul>
+
+              <Link href="/auth/signin">
+                <Button className="absolute bottom-6 md:bottom-7 left-8 right-8 py-4 rounded-xl text-[20px] font-semibold text-white bg-gradient-to-r from-[#17C272] from-[30.29%] to-[#BC12E6] transition shadow-lg shadow-green-500/40 hover:opacity-90">
+                  Get Full Roadmap!
+                </Button>
+              </Link>
+            </div>
+
+          </div>
+        </div>
       </div>
     </section>
   );
