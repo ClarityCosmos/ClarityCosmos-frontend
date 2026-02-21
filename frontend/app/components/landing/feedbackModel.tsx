@@ -3,7 +3,7 @@
 import React, { useState } from "react";
 import { X, Heart } from "lucide-react";
 
-export default function FeedbackModal() {
+export default function FeedbackModal({ closeModal }: { closeModal: () => void }) {
     const [rating, setRating] = useState<number>(0);
     const [hover, setHover] = useState<number>(0);
     const [feedback, setFeedback] = useState<string>("");
@@ -39,7 +39,7 @@ export default function FeedbackModal() {
             <div className="relative w-full max-w-md p-8 rounded-3xl bg-gradient-to-b from-[#4c0082] via-[#800080] to-[#b000b0] text-center shadow-2xl border border-purple-400/20">
 
                 {/* Close Button */}
-                <button className="absolute top-4 left-4 p-2 rounded-full border border-white/30 text-white hover:bg-white/10 transition">
+                <button onClick={closeModal} className="absolute top-4 left-4 p-2 rounded-full border border-white/30 text-white hover:bg-white/10 transition">
                     <X size={20} />
                 </button>
 

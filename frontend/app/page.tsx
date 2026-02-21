@@ -21,7 +21,7 @@ export default function Home() {
       <Testimonials />
       <FaQ />
       <Contact />
-      <Footer/>
+      <Footer />
     </main>
   );
 }
