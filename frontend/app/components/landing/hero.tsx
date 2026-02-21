@@ -3,8 +3,9 @@ import { FaPlay, FaCommentMedical } from "react-icons/fa";
 import Link from "next/link";
 import Image from "next/image";
 
+
 const Hero = () => {
-  
+
   const avatars = [
     {
       id: 1,
@@ -30,24 +31,24 @@ const Hero = () => {
       <div className="container relative z-10 mx-auto max-w-4xl text-center">
         {/* Avatars */}
         <div className="flex items-center justify-center gap-2 mb-6 border border-gray-400 px-4 py-2 rounded-xl mx-auto max-w-xs">
-      {/* Avatar Group */}
-      <div className="flex -space-x-2">
-        {avatars.map((avatar) => (
-          <Image
-            key={avatar.id}
-            width={8}
-            height={8}
-            src={avatar.image}
-            alt={`Avatar ${avatar.id}`}
-            className="w-8 h-8 rounded-full border-2 border-background object-cover"
-          />
-        ))}
-      </div>
+          {/* Avatar Group */}
+          <div className="flex -space-x-2">
+            {avatars.map((avatar) => (
+              <Image
+                key={avatar.id}
+                width={8}
+                height={8}
+                src={avatar.image}
+                alt={`Avatar ${avatar.id}`}
+                className="w-8 h-8 rounded-full border-2 border-background object-cover"
+              />
+            ))}
+          </div>
 
-      <span className="text-sm text-white ml-2">
-        Your Personalized AI Mentor
-      </span>
-    </div>
+          <span className="text-sm text-white ml-2">
+            Your Personalized AI Mentor
+          </span>
+        </div>
         {/* Main Headline */}
         <h1 className="text-4xl md:text-6xl lg:text-7xl font-bold mb-6 text-white leading-tight">
           <span className="bg-linear-to-r from-[#7C3AED] to-white bg-clip-text text-transparent">
@@ -68,21 +69,31 @@ const Hero = () => {
 
         {/* CTA Buttons */}
         <div className="flex flex-row items-center justify-center gap-4">
-          <Link href="">
-            <Button className="bg-[#7C3AED] hover:bg-[#6D28D9] text-white flex items-center gap-2 px-5 py-2 rounded-lg text-md font-semibold transition-all duration-300 shadow-md">
-              <FaCommentMedical className="w-3 h-3 text-white" />
-              <span>Try Beta Free</span>
-            </Button>
-          </Link>
-          <Link href="">
-            <Button className="bg-[#7C3AED] hover:bg-[#6D28D9] text-white flex items-center gap-2 px-5 py-2 rounded-lg text-md font-semibold transition-all duration-300 shadow-md">
-              <FaPlay className="w-3 h-3 text-white" />
-              <span>Try Beta Free</span>
-            </Button>
-          </Link>
+          <div className="flex flex-col sm:flex-row gap-4 w-full sm:w-auto">
+            <Link href="/auth/signin">
+              <Button
+
+                className="w-full sm:w-auto bg-[#7C3AED] hover:bg-[#6D28D9] text-white flex items-center justify-center gap-2 px-5 py-3 rounded-lg text-md font-semibold transition-all duration-300 shadow-md"
+              >
+                <FaCommentMedical className="w-4 h-4 text-white" />
+                <span>Explore Demo</span>
+              </Button>
+            </Link>
+
+            <Link href="/auth/signin">
+              <Button
+
+                className="w-full sm:w-auto bg-[#7C3AED] hover:bg-[#6D28D9] text-white flex items-center justify-center gap-2 px-5 py-3 rounded-lg text-md font-semibold transition-all duration-300 shadow-md"
+              >
+                <FaPlay className="w-4 h-4 text-white" />
+                <span>Try Beta Free</span>
+              </Button>
+            </Link>
+          </div>
+
         </div>
       </div>
-    </section>
+    </section >
   );
 };
 
