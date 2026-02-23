@@ -10,7 +10,7 @@ import { LayoutGrid, Plus } from "lucide-react";
 async function getDashboardData(token: string | null) {
     if (!token) throw new Error("No token provided");
 
-    const res = await fetch("http://16.171.250.82:5000/api/users/beta-data", {
+    const res = await fetch("https://16.171.250.82.sslip.io/api/users/beta-data", {
         headers: { Authorization: `Bearer ${token}` },
     });
 

@@ -19,7 +19,7 @@ export default function FeedbackModal({ closeModal }: { closeModal: () => void }
         console.log("Sending to backend:", payload);
 
         try {
-            const response = await fetch("http://16.171.250.82:5000/api/reviews", {
+            const response = await fetch("https://16.171.250.82.sslip.io/api/reviews", {
                 method: "POST",
                 headers: { "Content-Type": "application/json" },
                 body: JSON.stringify(payload),

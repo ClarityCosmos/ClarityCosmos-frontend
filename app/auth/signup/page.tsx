@@ -26,7 +26,7 @@ const SignUpPage = () => {
     setLoading(true);
 
     try {
-      const res = await fetch("http://16.171.250.82:5000/api/auth/register", {
+      const res = await fetch("https://16.171.250.82.sslip.io/api/auth/register", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ username, email, password }),

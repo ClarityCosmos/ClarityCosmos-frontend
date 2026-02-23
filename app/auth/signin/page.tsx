@@ -25,7 +25,7 @@ const SignInPage = () => {
     setLoading(true);
 
     try {
-      const res = await fetch("http://16.171.250.82:5000/api/auth/login", {
+      const res = await fetch("https://16.171.250.82.sslip.io/api/auth/login", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
