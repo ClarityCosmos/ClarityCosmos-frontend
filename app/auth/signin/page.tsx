@@ -8,6 +8,8 @@ import { FaGithub } from "react-icons/fa";
 import Link from "next/link";
 import { ROUTES } from "@/app/share/route";
 
+const API_BASE = process.env.NEXT_PUBLIC_API_URL || "http://localhost:5000";
+
 const SignInPage = () => {
   const router = useRouter();
   const [usernameOrEmail, setUsernameOrEmail] = useState("");
@@ -33,7 +35,7 @@ const SignInPage = () => {
     setLoading(true);
 
     try {
-      const res = await fetch("https://16.171.250.82.sslip.io/api/auth/login", {
+      const res = await fetch(`${API_BASE}/api/auth/login`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
@@ -50,7 +52,17 @@ const SignInPage = () => {
       if (!token) throw new Error("Token not received from backend");
 
       localStorage.setItem("token", token);
-      router.push("/onboarding");
+
+      // Check if onboarding is already completed
+      const profileRes = await fetch(`${API_BASE}/api/onboarding/profile`, {
+        headers: { Authorization: `Bearer ${token}` },
+      });
+
+      if (profileRes.ok) {
+        router.push("/dashboard"); // Already completed onboarding
+      } else {
+        router.push("/onboarding"); // Needs to complete onboarding
+      }
     } catch (err: any) {
       console.error(err);
       alert(err.message || "Login failed");

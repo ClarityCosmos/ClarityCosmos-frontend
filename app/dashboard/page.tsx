@@ -6,10 +6,12 @@ import Link from "next/link";
 import FeedbackModal from "../components/landing/feedbackModel";
 import { LayoutGrid, Plus } from "lucide-react";
 
+const API_BASE = process.env.NEXT_PUBLIC_API_URL || "http://localhost:5000";
+
 async function getDashboardData(token: string | null) {
     if (!token) throw new Error("No token provided");
 
-    const res = await fetch("https://16.171.250.82.sslip.io/api/users/beta-data", {
+    const res = await fetch(`${API_BASE}/api/users/beta-data`, {
         headers: { Authorization: `Bearer ${token}` },
     });
 
@@ -64,8 +66,10 @@ export default function Dashboard() {
             } catch (err: any) {
                 console.error(err);
 
-                if (err.message.includes("token")) {
-                    setError("Session expired. Please login again.");
+                if (err.message.includes("token") || err.message.includes("expired") || err.message.includes("Authentication")) {
+                    localStorage.removeItem("token");
+                    window.location.href = "/auth/signin";
+                    return;
                 } else {
                     setError(err.message);
                 }
