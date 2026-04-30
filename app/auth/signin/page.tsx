@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import { AiOutlineLoading3Quarters } from "react-icons/ai";
 import { FcGoogle } from "react-icons/fc";
@@ -13,6 +13,14 @@ const SignInPage = () => {
   const [usernameOrEmail, setUsernameOrEmail] = useState("");
   const [password, setPassword] = useState("");
   const [loading, setLoading] = useState(false);
+
+  // Redirect to dashboard if already logged in
+  useEffect(() => {
+    const token = localStorage.getItem("token");
+    if (token) {
+      router.push("/dashboard");
+    }
+  }, [router]);
 
   const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -42,7 +50,7 @@ const SignInPage = () => {
       if (!token) throw new Error("Token not received from backend");
 
       localStorage.setItem("token", token);
-      router.push("/dashboard");
+      router.push("/onboarding");
     } catch (err: any) {
       console.error(err);
       alert(err.message || "Login failed");

@@ -127,6 +127,12 @@ export default function Dashboard() {
                 >
                     Back to Home
                 </Link>
+                <Link
+                    href="/profile"
+                    className="px-3 sm:px-4 py-1.5 sm:py-2 text-xs sm:text-sm rounded-lg sm:rounded-xl bg-gradient-to-r from-indigo-600 to-purple-600 hover:from-indigo-700 hover:to-purple-700 transition shadow-lg shadow-purple-500/20 font-semibold"
+                >
+                    📊 View Profile
+                </Link>
             </div>
 
             <section className="flex justify-center px-4">
