@@ -5,145 +5,127 @@ import { useRouter } from "next/navigation";
 
 // --- Question Definitions ---
 const QUESTIONS = [
+    // ─── Section 1: Identity ───
     {
-        id: "background",
-        title: "What best describes your background?",
+        id: "nickname",
+        title: "What should your AI Mentor call you?",
+        section: "Section 1: Identity",
+        type: "text" as const,
+        options: [],
+    },
+    {
+        id: "section",
+        title: "Select your section:",
+        section: "Section 1: Identity",
         type: "radio" as const,
         options: [
-            "College/University student",
-            "Working professional",
-            "Career switcher",
-            "Self-learner preparing for interviews",
-        ],
-    },
-    {
-        id: "understanding",
-        title: "How would you rate your current DSA understanding?",
-        type: "radio" as const,
-        options: ["Beginner", "Intermediate", "Advanced"],
-    },
-    {
-        id: "language",
-        title: "What's your preferred programming language for DSA?",
-        type: "radio" as const,
-        options: [
-            "C++",
-            "Java",
-            "Python",
-            "JavaScript",
-            "C",
-            "C#",
-            "Go",
-            "Rust",
-            "Kotlin",
-            "Swift",
-        ],
-    },
-    {
-        id: "learningSources",
-        title: "How do you currently learn DSA?",
-        subtitle: "Select all that apply",
-        type: "checkbox" as const,
-        options: [
-            "YouTube tutorials",
-            "Online courses (Coursera, Udemy, etc.)",
-            "Practice sites (LeetCode, HackerRank, etc.)",
-            "College or coaching classes",
-            "Self-study from books",
-        ],
-    },
-    {
-        id: "struggles",
-        title: "What's your biggest struggle?",
-        subtitle: "Select all that apply",
-        type: "checkbox" as const,
-        options: [
-            "Staying consistent",
-            "Understanding complex topics",
-            "Choosing what to study next",
-            "Getting stuck on problems",
-            "Balancing DSA with other commitments",
-        ],
-    },
-    {
-        id: "hoursPerDay",
-        title: "How many hours per day can you dedicate?",
-        type: "radio" as const,
-        options: ["< 1 hour", "1–2 hours", "2–4 hours", "4+ hours"],
-    },
-    {
-        id: "goal",
-        title: "What's your primary goal?",
-        type: "radio" as const,
-        options: [
-            "Crack coding interviews (FAANG / startups)",
-            "Build strong problem-solving foundation",
-            "Excel in competitive programming",
-            "Learn DSA for academic growth",
-        ],
-    },
-    {
-        id: "goalTimeframe",
-        title: "When do you want to achieve your goal?",
-        type: "radio" as const,
-        options: [
-            "In the next 3 months",
-            "3–6 months",
-            "6–12 months",
-            "Not sure yet",
-        ],
-    },
-    {
-        id: "mentorStyle",
-        title: "What mentor style works best for you?",
-        subtitle: "Select all that apply",
-        type: "checkbox" as const,
-        options: [
-            "Structured and strict",
-            "Supportive and motivating",
-            "Fast-paced and challenge-driven",
-            "Step-by-step with detailed explanations",
-        ],
-    },
-    {
-        id: "courseType",
-        title: "What type of courses do you prefer?",
-        type: "radio" as const,
-        options: ["Free only", "Paid only", "Both Free and Paid"],
-    },
-    {
-        id: "preferredLanguage",
-        title: "Which language do you prefer?",
-        type: "radio" as const,
-        options: ["English", "Urdu"],
-    },
-    {
-        id: "preferredProgLanguage",
-        title: "Which programming language do you prefer?",
-        type: "radio" as const,
-        options: [
-            "Python",
-            "JavaScript",
-            "C++",
-            "Java",
-            "C",
-            "C#",
-            "Go",
-            "Rust",
-            "Kotlin",
-            "Swift",
-            "TypeScript",
-            "Ruby",
+            "Semester 1",
+            "Semester 2",
+            "Semester 3",
+            "Semester 4",
+            "Semester 5",
+            "Semester 6",
+            "Semester 7",
+            "Semester 8",
         ],
     },
     {
         id: "avatarUrl",
-        title: "Choose your avatar",
+        title: "Choose your own Python Mentor:",
+        subtitle: "Personalization and building a student-mentor bond.",
+        section: "Section 1: Identity",
         type: "avatar" as const,
         options: [
             "/assets/avatar_1.jpeg",
             "/assets/avatar_2.jpeg",
             "/assets/avatar_3.jpeg",
+        ],
+    },
+    // ─── Section 2: The Mental Blueprint ───
+    {
+        id: "stuckPoint",
+        title: "When you solve a coding problem, where do you usually get stuck?",
+        section: "Section 2: The Mental Blueprint",
+        type: "radio" as const,
+        options: [
+            "Logic Formulation (I don't know how to start)",
+            "Implementation (I have the logic but can't write the code)",
+            "Optimization (My code works but it's too slow/inefficient)",
+            "Complexity (I struggle with Big O notation and time/space trade-offs)",
+        ],
+    },
+    {
+        id: "problemApproach",
+        title: "How do you approach a new problem you've never seen before?",
+        section: "Section 2: The Mental Blueprint",
+        type: "radio" as const,
+        options: [
+            "I look for a similar problem I've solved before.",
+            "I try to break it down into the smallest possible sub-problems.",
+            "I start coding immediately and iterate as I go.",
+            "I get overwhelmed and check the solution/editorial quickly.",
+        ],
+    },
+    {
+        id: "loopVisualization",
+        title: "When you see a for loop, how do you visualize it?",
+        section: "Section 2: The Mental Blueprint",
+        type: "radio" as const,
+        options: [
+            "As a mathematical sequence or pattern.",
+            "As a physical action being repeated (like walking steps).",
+            "Just as text/code I need to memorize.",
+            "I don't see anything; it feels like a black box.",
+        ],
+    },
+    // ─── Section 3: Temperament & Habits ───
+    {
+        id: "errorReaction",
+        title: "When your code gives a \"Syntax Error,\" what is your immediate reaction?",
+        section: "Section 3: Temperament & Habits",
+        type: "radio" as const,
+        options: [
+            "Curiosity: I want to hunt down the bug immediately.",
+            "Frustration: I feel like I'm not meant for coding.",
+            "Confusion: I have no idea what the error message is telling me.",
+            "Reliance: I immediately ask a friend or the teacher to fix it.",
+        ],
+    },
+    {
+        id: "copyFrequency",
+        title: "How often do you copy code (from a board or video) without knowing exactly why a specific variable was used?",
+        section: "Section 3: Temperament & Habits",
+        type: "radio" as const,
+        options: [
+            "Multiple times",
+            "Sometimes",
+            "Never",
+        ],
+    },
+    // ─── Section 4: Structural Foundation ───
+    {
+        id: "firstMove",
+        title: "If I ask you to build a small \"Student Management System,\" what is your first move?",
+        section: "Section 4: Structural Foundation",
+        type: "radio" as const,
+        options: [
+            "I open a code editor and start typing.",
+            "I take a pen and paper to plan the logic.",
+            "I search for a tutorial to follow step-by-step.",
+            "I wait for instructions on what the first line should be.",
+        ],
+    },
+    {
+        id: "learningMotivation",
+        title: "Why are you learning Python at PGC Shahdara?",
+        section: "Section 4: Structural Foundation",
+        subtitle: "Select all that apply",
+        type: "checkbox" as const,
+        options: [
+            "I want to build AI, Apps, or Games in the future.",
+            "I want to ensure I get the highest possible marks in my Semester Exams.",
+            "It's just a required subject for my degree.",
+            "I'm curious about how technology works.",
         ],
     },
 ];
@@ -170,6 +152,11 @@ export default function OnboardingPage() {
         if (!answer) return false;
         if (Array.isArray(answer)) return answer.length > 0;
         return answer.length > 0;
+    };
+
+    // --- Handle text input ---
+    const handleTextInput = (value: string) => {
+        setAnswers((prev) => ({ ...prev, [currentQuestion.id]: value }));
     };
 
     // --- Handle radio selection ---
@@ -227,19 +214,16 @@ export default function OnboardingPage() {
         }
 
         const payload = {
-            background: answers.background,
-            understanding: answers.understanding,
-            language: answers.language,
-            learningSources: answers.learningSources,
-            struggles: answers.struggles,
-            hoursPerDay: answers.hoursPerDay,
-            goal: answers.goal,
-            goalTimeframe: answers.goalTimeframe,
-            mentorStyle: answers.mentorStyle,
-            courseType: answers.courseType,
-            preferredLanguage: answers.preferredLanguage,
-            preferredProgLanguage: answers.preferredProgLanguage,
+            nickname: answers.nickname,
+            section: answers.section,
             avatarUrl: answers.avatarUrl || null,
+            stuckPoint: answers.stuckPoint,
+            problemApproach: answers.problemApproach,
+            loopVisualization: answers.loopVisualization,
+            errorReaction: answers.errorReaction,
+            copyFrequency: answers.copyFrequency,
+            firstMove: answers.firstMove,
+            learningMotivation: answers.learningMotivation,
         };
 
         try {
@@ -270,6 +254,11 @@ export default function OnboardingPage() {
 
     // --- Progress percentage ---
     const progressPercent = ((currentStep + 1) / TOTAL_STEPS) * 100;
+
+    // --- Get section label for display ---
+    const currentSection = currentQuestion.section;
+    const prevSection = currentStep > 0 ? QUESTIONS[currentStep - 1].section : null;
+    const showSectionHeader = currentSection !== prevSection;
 
     return (
         <div className="min-h-screen bg-[#111827] flex flex-col items-center justify-center px-4 py-8 relative overflow-hidden">
@@ -305,6 +294,15 @@ export default function OnboardingPage() {
                     animation: `${direction === "next" ? "slideInRight" : "slideInLeft"} 0.35s ease-out`,
                 }}
             >
+                {/* Section Header */}
+                {showSectionHeader && (
+                    <div className="mb-4 pb-3 border-b border-gray-200">
+                        <span className="text-xs font-bold text-purple-600 uppercase tracking-widest">
+                            {currentSection}
+                        </span>
+                    </div>
+                )}
+
                 {/* Question Title */}
                 <h2 className="text-xl md:text-2xl font-bold text-gray-900 mb-2">
                     {currentQuestion.title}
@@ -315,6 +313,20 @@ export default function OnboardingPage() {
                     </p>
                 )}
                 {!currentQuestion.subtitle && <div className="mb-6" />}
+
+                {/* Text Input */}
+                {currentQuestion.type === "text" && (
+                    <div>
+                        <input
+                            type="text"
+                            placeholder="Type your answer..."
+                            value={(answers[currentQuestion.id] as string) || ""}
+                            onChange={(e) => handleTextInput(e.target.value)}
+                            className="w-full px-5 py-4 rounded-xl border-2 border-gray-200 bg-white text-gray-900 font-medium focus:outline-none focus:border-purple-500 focus:bg-purple-50/30 transition-all duration-200"
+                            autoFocus
+                        />
+                    </div>
+                )}
 
                 {/* Radio Options */}
                 {currentQuestion.type === "radio" && (
@@ -511,7 +523,7 @@ export default function OnboardingPage() {
                                 Submitting...
                             </span>
                         ) : (
-                            "Submit & View Profile →"
+                            "Submit & View Dashboard →"
                         )}
                     </button>
                 ) : (
