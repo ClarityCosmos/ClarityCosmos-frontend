@@ -117,7 +117,7 @@ const QUESTIONS = [
     },
     {
         id: "learningMotivation",
-        title: "Why are you learning Python at PGC Shahdara?",
+        title: "Why are you learning Python?",
         section: "Section 4: Structural Foundation",
         subtitle: "Select all that apply",
         type: "checkbox" as const,
