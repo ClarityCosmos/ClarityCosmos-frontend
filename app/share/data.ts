@@ -9,7 +9,7 @@ export interface NavLink {
 export const NAV_LINKS: NavLink[] = [
   { label: "Home", href: "#hero" }, // scrolls to the hero section
   { label: "Features", href: "#features" },
-  { label: "Pricing", href: "#pricing" },
+
   { label: "FAQs", href: "#faqs" },
   { label: "Contact Us", href: "#contact-us" },
 ];

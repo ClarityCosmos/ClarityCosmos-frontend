@@ -1,264 +1,535 @@
 "use client";
 
-import Image from "next/image";
 import { useState, useEffect } from "react";
 import Link from "next/link";
-import FeedbackModal from "../components/landing/feedbackModel";
-import { LayoutGrid, Plus } from "lucide-react";
+import Image from "next/image";
 
 const API_BASE = process.env.NEXT_PUBLIC_API_URL || "http://localhost:5000";
 
-async function getDashboardData(token: string | null) {
-    if (!token) throw new Error("No token provided");
+interface WeakArea {
+    title: string;
+    description: string;
+}
 
-    const res = await fetch(`${API_BASE}/api/users/beta-data`, {
+interface ProfileData {
+    username: string;
+    email: string;
+    onboarding: {
+        nickname: string;
+        section: string;
+        avatarUrl: string | null;
+        stuckPoint: string;
+        problemApproach: string;
+        loopVisualization: string;
+        errorReaction: string;
+        copyFrequency: string;
+        firstMove: string;
+        learningMotivation: string[];
+    };
+    stats: {
+        testsAttempted: number;
+        averageMarks: number;
+        avgTimePerQuestion: number;
+    };
+    progress: {
+        roteMemory: number;
+        semesterReadiness: number;
+    };
+    weakAreas: WeakArea[];
+    criticalAlerts: string[];
+}
+
+async function fetchProfile(token: string) {
+    const res = await fetch(`${API_BASE}/api/onboarding/profile`, {
         headers: { Authorization: `Bearer ${token}` },
     });
-
     if (!res.ok) {
         const errData = await res.json().catch(() => ({}));
-        throw new Error(errData?.error?.message || "Failed to fetch dashboard data");
+        throw new Error(errData?.error?.message || "Failed to fetch profile data");
     }
-
     const result = await res.json();
     return result.data;
 }
 
-export default function Dashboard() {
-    const [data, setData] = useState<any>(null);
-    const [showFeedback, setShowFeedback] = useState(false);
-    const [videoLoaded, setVideoLoaded] = useState(false);
+async function fetchUserData(token: string) {
+    const res = await fetch(`${API_BASE}/api/users/beta-data`, {
+        headers: { Authorization: `Bearer ${token}` },
+    });
+    if (!res.ok) {
+        const errData = await res.json().catch(() => ({}));
+        throw new Error(errData?.error?.message || "Failed to fetch user data");
+    }
+    const result = await res.json();
+    return result.data;
+}
+
+export default function DashboardPage() {
+    const [data, setData] = useState<ProfileData | null>(null);
+    const [userData, setUserData] = useState<{ username: string; email: string } | null>(null);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState<string | null>(null);
 
     useEffect(() => {
-        const loadData = async () => {
+        const loadProfile = async () => {
             const token = localStorage.getItem("token");
-
             if (!token) {
-                setError("User not logged in");
+                setError("Please log in to view your dashboard.");
                 setLoading(false);
                 return;
             }
-
             try {
-                const result = await getDashboardData(token);
-
-                const mappedData = {
-                    user: {
-                        username: result.username,
-                        email: result.email,
-                    },
-                    professor: {
-                        name: result.mentorName,
-                        avatarUrl: result.mentorImageUrl,
-                    },
-                    language: result.language,
-                    weakAreas: result.hardestTopic
-                        ? result.hardestTopic.split(",").map((t: string) => t.trim())
-                        : [],
-                    videoUrl: result.video_url,
-                    pdfUrl: result.pdf_url,
-                };
-
-                setData(mappedData);
-                console.log(mappedData, "fetch data");
+                const [profileData, user] = await Promise.all([
+                    fetchProfile(token),
+                    fetchUserData(token),
+                ]);
+                setData(profileData);
+                setUserData({ username: user.username, email: user.email });
             } catch (err: any) {
-                console.error(err);
-
-                if (err.message.includes("token") || err.message.includes("expired") || err.message.includes("Authentication")) {
+                if (err.message.includes("token") || err.message.includes("expired") || err.message.includes("Invalid")) {
                     localStorage.removeItem("token");
                     window.location.href = "/auth/signin";
                     return;
-                } else {
-                    setError(err.message);
                 }
+                setError(err.message.includes("not completed")
+                    ? "You haven't completed onboarding yet."
+                    : err.message);
             } finally {
                 setLoading(false);
             }
         };
-
-        loadData();
+        loadProfile();
     }, []);
 
-    const handleDownload = async (url: string, filename: string) => {
-        try {
-            const response = await fetch(url);
-            const blob = await response.blob();
-            const blobUrl = window.URL.createObjectURL(blob);
-            const link = document.createElement("a");
-            link.href = blobUrl;
-            link.download = filename;
-            document.body.appendChild(link);
-            link.click();
-            document.body.removeChild(link);
-            window.URL.revokeObjectURL(blobUrl);
-        } catch (err) {
-            console.error("Download failed", err);
-        }
-    };
-
-    if (loading)
+    if (loading) {
         return (
-            <div className="bg-[#111827] min-h-screen text-white flex items-center justify-center">
-                Loading...
+            <div style={{
+                background: "linear-gradient(135deg, #0a0a2e 0%, #1a0a3e 50%, #0a0a2e 100%)",
+                minHeight: "100vh",
+                display: "flex",
+                alignItems: "center",
+                justifyContent: "center",
+            }}>
+                <div style={{
+                    width: 48,
+                    height: 48,
+                    border: "4px solid rgba(138, 43, 226, 0.3)",
+                    borderTop: "4px solid #8a2be2",
+                    borderRadius: "50%",
+                    animation: "spin 1s linear infinite",
+                }} />
+                <style>{`@keyframes spin { to { transform: rotate(360deg); } }`}</style>
             </div>
         );
+    }
 
-    if (error)
+    if (error) {
         return (
-            <div className="bg-[#111827] min-h-screen text-white flex flex-col items-center justify-center">
-                <p className="text-red-500 text-lg mb-4">{error}</p>
-                <p className="text-white/70 text-sm">
-                    Please refresh the page or log in again if necessary.
-                </p>
+            <div style={{
+                background: "linear-gradient(135deg, #0a0a2e 0%, #1a0a3e 50%, #0a0a2e 100%)",
+                minHeight: "100vh",
+                display: "flex",
+                flexDirection: "column" as const,
+                alignItems: "center",
+                justifyContent: "center",
+                gap: 24,
+                padding: 16,
+                color: "white",
+            }}>
+                <p style={{ color: "#f87171", fontSize: 18, fontWeight: 600, textAlign: "center" }}>{error}</p>
+                <div style={{ display: "flex", gap: 12 }}>
+                    <Link href="/onboarding" style={{
+                        padding: "12px 24px",
+                        borderRadius: 12,
+                        background: "#7c3aed",
+                        color: "white",
+                        fontWeight: 600,
+                        fontSize: 14,
+                        textDecoration: "none",
+                    }}>Go to Onboarding</Link>
+                    <Link href="/" style={{
+                        padding: "12px 24px",
+                        borderRadius: 12,
+                        border: "1px solid rgba(255,255,255,0.2)",
+                        color: "rgba(255,255,255,0.6)",
+                        fontWeight: 600,
+                        fontSize: 14,
+                        textDecoration: "none",
+                    }}>Home</Link>
+                </div>
             </div>
         );
+    }
 
-    const userName = data?.user?.username || "User";
-    const professor = data?.professor || {};
-    const videoUrl = data?.videoUrl || "";
-    const pdfUrl = data?.pdfUrl || "";
-    const language = data?.language || "";
-    const weakAreas = data?.weakAreas || [];
+    if (!data) return null;
+    const { stats, progress, weakAreas, criticalAlerts, onboarding } = data;
+    const nickname = onboarding?.nickname || userData?.username || data.username || "User";
+    const section = onboarding?.section || "Semester 1";
+
+    // Get first letter for avatar
+    const initial = nickname.charAt(0).toUpperCase();
+
+    // Determine alert message
+    const showAlert = criticalAlerts.length > 0;
+    const alertMessage = `Alert!! ${nickname}, their are high chances of your semester failure! kindly consult with your teacher.`;
 
     return (
-        <div className="bg-[#111827] min-h-screen text-white">
-            <div className="w-full h-12 sm:h-14 flex items-center justify-between px-4 sm:px-6">
-                <Link
-                    href="/"
-                    className="px-3 sm:px-4 py-1.5 sm:py-2 text-xs sm:text-sm rounded-lg sm:rounded-xl bg-purple-700 hover:bg-purple-800 transition"
-                >
-                    Back to Home
-                </Link>
-                <Link
-                    href="/profile"
-                    className="px-3 sm:px-4 py-1.5 sm:py-2 text-xs sm:text-sm rounded-lg sm:rounded-xl bg-gradient-to-r from-indigo-600 to-purple-600 hover:from-indigo-700 hover:to-purple-700 transition shadow-lg shadow-purple-500/20 font-semibold"
-                >
-                    📊 View Profile
-                </Link>
-            </div>
+        <div style={{
+            background: "linear-gradient(135deg, #0a0a2e 0%, #0d0b3e 30%, #1a0a3e 60%, #0a0a2e 100%)",
+            minHeight: "100vh",
+            color: "white",
+            fontFamily: "'Segoe UI', 'Inter', sans-serif",
+        }}>
+            <style>{`
+                @keyframes glowPulse {
+                    0%, 100% { box-shadow: 0 0 15px rgba(0, 100, 255, 0.3), inset 0 0 15px rgba(0, 100, 255, 0.1); }
+                    50% { box-shadow: 0 0 25px rgba(0, 100, 255, 0.5), inset 0 0 25px rgba(0, 100, 255, 0.15); }
+                }
+                @keyframes borderGlow {
+                    0%, 100% { border-color: rgba(0, 120, 255, 0.5); }
+                    50% { border-color: rgba(100, 150, 255, 0.8); }
+                }
+                @keyframes slideDown {
+                    from { transform: translateY(-100%); opacity: 0; }
+                    to { transform: translateY(0); opacity: 1; }
+                }
+                .nav-link {
+                    color: rgba(255,255,255,0.85);
+                    text-decoration: none;
+                    font-weight: 600;
+                    font-size: 15px;
+                    padding: 6px 4px;
+                    transition: all 0.2s;
+                    border-bottom: 2px solid transparent;
+                }
+                .nav-link:hover {
+                    color: white;
+                    border-bottom-color: rgba(255,255,255,0.5);
+                }
+                .nav-link-active {
+                    color: white;
+                    text-decoration: underline;
+                    text-underline-offset: 6px;
+                    text-decoration-thickness: 2px;
+                }
+                .glow-card {
+                    background: linear-gradient(145deg, #0f1a5e 0%, #1a1070 50%, #1e0d6e 100%);
+                    border: 2px solid rgba(0, 120, 255, 0.4);
+                    border-radius: 16px;
+                    animation: borderGlow 3s ease-in-out infinite;
+                }
+                .stat-bar-track {
+                    width: 100%;
+                    height: 8px;
+                    background: rgba(0, 50, 150, 0.3);
+                    border-radius: 4px;
+                    overflow: hidden;
+                    border: 1px solid rgba(0, 100, 255, 0.3);
+                }
+                .btn-outline {
+                    padding: 12px 36px;
+                    border-radius: 8px;
+                    border: 2px solid rgba(0, 120, 255, 0.6);
+                    background: transparent;
+                    color: white;
+                    font-weight: 700;
+                    font-size: 15px;
+                    cursor: pointer;
+                    transition: all 0.3s;
+                    text-decoration: none;
+                    display: inline-block;
+                }
+                .btn-outline:hover {
+                    background: rgba(0, 120, 255, 0.15);
+                    border-color: rgba(0, 150, 255, 0.9);
+                    box-shadow: 0 0 20px rgba(0, 120, 255, 0.3);
+                }
+                .btn-filled {
+                    padding: 12px 36px;
+                    border-radius: 8px;
+                    border: 2px solid rgba(0, 120, 255, 0.6);
+                    background: linear-gradient(135deg, #1a1a6e, #2a1a8e);
+                    color: white;
+                    font-weight: 700;
+                    font-size: 15px;
+                    cursor: pointer;
+                    transition: all 0.3s;
+                    text-decoration: none;
+                    display: inline-block;
+                }
+                .btn-filled:hover {
+                    background: linear-gradient(135deg, #2a2a8e, #3a2aae);
+                    box-shadow: 0 0 20px rgba(0, 120, 255, 0.3);
+                }
+            `}</style>
 
-            <section className="flex justify-center px-4">
-                <div className="w-full max-w-6xl space-y-10">
-                    <div className="text-center space-y-6">
-                        <h1 className="text-2xl md:text-4xl font-bold">
-                            <span>{userName.toUpperCase()}</span>, YOUR DSA ROADMAP IS READY!
-                        </h1>
-                        <div className="w-full max-w-[273px] h-[60px] mx-auto">
-                            <button
-                                onClick={() => handleDownload(videoUrl, "roadmap.mp4")}
-                                className="w-full h-full rounded-xl text-lg md:text-xl font-semibold text-white bg-gradient-to-r from-[#17C272] to-[#BC12E6] transition shadow-lg shadow-green-500/40 hover:scale-105 hover:opacity-90 duration-300"
-                            >
-                                GET ROADMAP!
-                            </button>
+            {/* ─── Navbar ─── */}
+            <nav style={{
+                width: "100%",
+                padding: "12px 24px",
+                display: "flex",
+                alignItems: "center",
+                gap: 28,
+                background: "linear-gradient(90deg, #1a1050 0%, #2a1a6e 50%, #1a1050 100%)",
+                borderBottom: "1px solid rgba(0, 100, 255, 0.2)",
+            }}>
+                {/* Avatar + Name */}
+                <div style={{ display: "flex", alignItems: "center", gap: 10 }}>
+                    <div style={{
+                        width: 42,
+                        height: 42,
+                        borderRadius: "50%",
+                        background: "linear-gradient(135deg, #4a2fbd, #7c3aed)",
+                        display: "flex",
+                        alignItems: "center",
+                        justifyContent: "center",
+                        fontWeight: 800,
+                        fontSize: 18,
+                        border: "2px solid rgba(255,255,255,0.2)",
+                        overflow: "hidden",
+                    }}>
+                        {/* onboarding?.avatarUrl ? (
+                            <Image 
+                                src={onboarding.avatarUrl} 
+                                alt={nickname} 
+                                width={42} 
+                                height={42} 
+                                style={{ width: "100%", height: "100%", objectFit: "cover" }}
+                            />
+                        ) : (
+                            initial
+                        ) */}
+                        {initial}
+                    </div>
+                    <span style={{ fontWeight: 800, fontSize: 20, color: "white" }}>{nickname}</span>
+                </div>
+
+                {/* Section */}
+                <span style={{ fontWeight: 600, fontSize: 15, color: "rgba(255,255,255,0.7)", letterSpacing: 0.5 }}>
+                    {section}
+                </span>
+
+                {/* Nav Links */}
+                <div style={{ display: "flex", gap: 24, marginLeft: "auto" }}>
+                    <Link href="/dashboard" className="nav-link nav-link-active">Dashboard</Link>
+                    <Link href="/action-plan" className="nav-link">Action Plan</Link>
+                    <Link href="#" className="nav-link">Tests Results</Link>
+                    <Link href="#" className="nav-link">Test Sandbox</Link>
+                </div>
+            </nav>
+
+            {/* ─── Alert Banner ─── */}
+            {showAlert && (
+                <div style={{
+                    width: "100%",
+                    padding: "10px 24px",
+                    background: "linear-gradient(90deg, #dc2626, #b91c1c)",
+                    textAlign: "center",
+                    fontWeight: 600,
+                    fontSize: 14,
+                    color: "white",
+                    animation: "slideDown 0.4s ease-out",
+                }}>
+                    {alertMessage}
+                </div>
+            )}
+
+            {/* ─── Main Content ─── */}
+            <main style={{
+                maxWidth: 1100,
+                margin: "0 auto",
+                padding: "32px 20px",
+            }}>
+                {/* 3-Column Grid */}
+                <div style={{
+                    display: "grid",
+                    gridTemplateColumns: "200px 1fr 1fr",
+                    gap: 24,
+                    alignItems: "start",
+                }}>
+                    {/* ─── Left Column: Stats ─── */}
+                    <div style={{ display: "flex", flexDirection: "column" as const, gap: 28, paddingTop: 8 }}>
+                        {/* Tests Attempted */}
+                        <div style={{ textAlign: "center" }}>
+                            <p style={{ fontSize: 14, fontWeight: 700, color: "rgba(255,255,255,0.85)", marginBottom: 4 }}>
+                                Tests Attempted
+                            </p>
+                            <p style={{ fontSize: 36, fontWeight: 900, color: "white", margin: "4px 0" }}>
+                                {stats.testsAttempted}
+                            </p>
+                            <div className="stat-bar-track">
+                                <div style={{
+                                    width: `${Math.min(stats.testsAttempted * 2, 100)}%`,
+                                    height: "100%",
+                                    background: "linear-gradient(90deg, #3b82f6, #60a5fa)",
+                                    borderRadius: 4,
+                                    transition: "width 1s ease-out",
+                                }} />
+                            </div>
+                        </div>
+
+                        {/* Avg Marks */}
+                        <div style={{ textAlign: "center" }}>
+                            <p style={{ fontSize: 14, fontWeight: 700, color: "rgba(255,255,255,0.85)", marginBottom: 4 }}>
+                                Avg Marks
+                            </p>
+                            <p style={{ fontSize: 36, fontWeight: 900, color: "white", margin: "4px 0" }}>
+                                {stats.averageMarks}
+                            </p>
+                            <div className="stat-bar-track">
+                                <div style={{
+                                    width: `${stats.averageMarks}%`,
+                                    height: "100%",
+                                    background: "linear-gradient(90deg, #3b82f6, #60a5fa)",
+                                    borderRadius: 4,
+                                    transition: "width 1s ease-out",
+                                }} />
+                            </div>
+                        </div>
+
+                        {/* Avg Time per Question */}
+                        <div style={{ textAlign: "center" }}>
+                            <p style={{ fontSize: 14, fontWeight: 700, color: "rgba(255,255,255,0.85)", marginBottom: 4 }}>
+                                Avg Time per Question
+                            </p>
+                            <p style={{ fontSize: 36, fontWeight: 900, color: "white", margin: "4px 0" }}>
+                                {stats.avgTimePerQuestion}
+                            </p>
+                            <div className="stat-bar-track">
+                                <div style={{
+                                    width: `${Math.min(stats.avgTimePerQuestion * 10, 100)}%`,
+                                    height: "100%",
+                                    background: "linear-gradient(90deg, #3b82f6, #60a5fa)",
+                                    borderRadius: 4,
+                                    transition: "width 1s ease-out",
+                                }} />
+                            </div>
                         </div>
                     </div>
 
-                    <div className="flex justify-center relative">
-                        <div className="w-full max-w-[1024px] aspect-video rounded-2xl p-[2px] bg-gradient-to-r from-pink-500 to-blue-500 relative overflow-hidden">
-                            {!videoLoaded && (
-                                <div className="absolute inset-0 z-10 flex items-center justify-center rounded-2xl overflow-hidden bg-[#111827]">
-                                    <div className="absolute inset-0">
-                                        <div className="w-[200%] h-full animate-shimmer bg-[linear-gradient(110deg,transparent,rgba(168,85,247,0.35),rgba(34,197,94,0.35),transparent)]" />
-                                    </div>
-                                    <div className="absolute inset-0 bg-gradient-to-r from-purple-900/30 via-transparent to-green-900/30" />
-                                    <span className="relative text-white font-semibold tracking-wide text-sm sm:text-base">
-                                        Your roadmap is being granted by {professor.name || "Professor"}
-                                    </span>
-                                </div>
-                            )}
-                            <div className="w-full h-full bg-black rounded-2xl overflow-hidden border border-green-400 shadow-2xl">
-                                {videoUrl ? (
-                                    <video
-                                        src={videoUrl}
-                                        controls
-                                        className="w-full h-full object-contain"
-                                        onLoadedData={() => setVideoLoaded(true)}
-                                        onEnded={() => setShowFeedback(true)}
-                                    />
-                                ) : (
-                                    <div className="w-full h-full flex items-center justify-center text-white font-bold">
-                                        Video not available
-                                    </div>
-                                )}
+                    {/* ─── Center Column: Rote Memory + Semester Readiness ─── */}
+                    <div style={{ display: "flex", flexDirection: "column" as const, gap: 24 }}>
+                        {/* Rote Memory Card */}
+                        <div className="glow-card" style={{ padding: 28, textAlign: "center" }}>
+                            <h3 style={{ fontSize: 18, fontWeight: 700, marginBottom: 12, color: "rgba(255,255,255,0.9)" }}>
+                                Rote-Memory
+                            </h3>
+                            <p style={{ fontSize: 48, fontWeight: 900, color: "white", margin: "8px 0 16px" }}>
+                                {progress.roteMemory}%
+                            </p>
+                            <div style={{
+                                width: "100%",
+                                height: 12,
+                                background: "rgba(0, 50, 150, 0.3)",
+                                borderRadius: 6,
+                                overflow: "hidden",
+                                border: "2px solid rgba(0, 120, 255, 0.4)",
+                            }}>
+                                <div style={{
+                                    width: `${progress.roteMemory}%`,
+                                    height: "100%",
+                                    background: progress.roteMemory >= 60 ? "linear-gradient(90deg, #dc2626, #ef4444)" : "linear-gradient(90deg, #22c55e, #4ade80)",
+                                    borderRadius: 4,
+                                    transition: "width 1.2s ease-out",
+                                }} />
                             </div>
                         </div>
 
-                        {showFeedback && (
-                            <div className="fixed inset-0 z-50">
-                                <FeedbackModal closeModal={() => setShowFeedback(false)} />
+                        {/* Semester Readiness Card */}
+                        <div className="glow-card" style={{ padding: 28, textAlign: "center" }}>
+                            <h3 style={{ fontSize: 18, fontWeight: 700, marginBottom: 12, color: "rgba(255,255,255,0.9)" }}>
+                                Semester Readiness
+                            </h3>
+                            <p style={{ fontSize: 48, fontWeight: 900, color: "white", margin: "8px 0 16px" }}>
+                                {progress.semesterReadiness}%
+                            </p>
+                            <div style={{
+                                width: "100%",
+                                height: 12,
+                                background: "rgba(0, 50, 150, 0.3)",
+                                borderRadius: 6,
+                                overflow: "hidden",
+                                border: "2px solid rgba(0, 120, 255, 0.4)",
+                            }}>
+                                <div style={{
+                                    width: `${progress.semesterReadiness}%`,
+                                    height: "100%",
+                                    borderRadius: 4,
+                                    transition: "width 1.2s ease-out",
+                                    display: "flex",
+                                    alignItems: "center",
+                                }}>
+                                    <div style={{
+                                        width: 16,
+                                        height: 16,
+                                        borderRadius: "50%",
+                                        background: "#eab308",
+                                        boxShadow: "0 0 10px rgba(234, 179, 8, 0.6)",
+                                        marginLeft: "auto",
+                                        position: "relative" as const,
+                                        right: -4,
+                                    }} />
+                                </div>
                             </div>
+                        </div>
+                    </div>
+
+                    {/* ─── Right Column: Weak Areas ─── */}
+                    <div className="glow-card" style={{
+                        padding: 28,
+                        background: "linear-gradient(145deg, #1a1a7a 0%, #2a1a9e 50%, #1a0d6e 100%)",
+                    }}>
+                        <h3 style={{
+                            fontSize: 20,
+                            fontWeight: 800,
+                            marginBottom: 20,
+                            color: "white",
+                        }}>
+                            Weak Areas
+                        </h3>
+                        {weakAreas.length > 0 ? (
+                            <div style={{ display: "flex", flexDirection: "column" as const, gap: 16 }}>
+                                {weakAreas.map((area, i) => (
+                                    <div key={i}>
+                                        <p style={{
+                                            fontSize: 14,
+                                            fontWeight: 800,
+                                            color: "white",
+                                            marginBottom: 4,
+                                        }}>
+                                            {area.title}
+                                        </p>
+                                        <p style={{
+                                            fontSize: 12,
+                                            color: "rgba(200, 210, 255, 0.75)",
+                                            lineHeight: 1.5,
+                                            margin: 0,
+                                        }}>
+                                            {area.description}
+                                        </p>
+                                    </div>
+                                ))}
+                            </div>
+                        ) : (
+                            <p style={{ fontSize: 14, color: "rgba(255,255,255,0.4)" }}>No weak areas detected!</p>
                         )}
                     </div>
-
-                    <div className="flex justify-center gap-6 flex-wrap">
-                        <button
-                            onClick={() => handleDownload(pdfUrl, "roadmap.pdf")}
-                            className="bg-gradient-to-r from-indigo-800 to-purple-700 px-6 py-3 rounded-full font-semibold shadow-lg hover:opacity-90"
-                        >
-                            GET PDF
-                        </button>
-                        <button
-                            onClick={() => handleDownload(videoUrl, "roadmap.mp4")}
-                            className="bg-gradient-to-r from-indigo-800 to-purple-700 px-6 py-3 rounded-full font-semibold shadow-lg hover:opacity-90"
-                        >
-                            GET VIDEO
-                        </button>
-                    </div>
-
-                    <div className="flex flex-col gap-6 p-8 md:ml-55 rounded-2xl">
-                        <div className="relative flex flex-col sm:flex-row items-center sm:justify-between w-full max-w-2xl px-6 sm:px-8 py-4 sm:py-6 rounded-full bg-gradient-to-r from-[#d000ff] via-[#8000ff] to-[#2000ff] border-b-2 border-r border-[#00ff41]">
-                            <div className="flex items-center gap-3 mb-3 sm:mb-0">
-                                <div className="relative">
-                                    <LayoutGrid size={28} className="text-white/80" />
-                                    <Plus size={14} className="absolute -bottom-1 -right-1 text-white" />
-                                </div>
-                                <span className="text-xl sm:text-2xl font-black tracking-tighter italic uppercase">
-                                    Language
-                                </span>
-                            </div>
-                            <div className="flex items-center gap-3 bg-black/20 px-4 sm:px-6 py-2 rounded-full border border-white/10">
-                                <div className="w-3 h-3 rounded-full bg-[#00ff41] shadow-[0_0_8px_#00ff41]" />
-                                <span className="text-lg sm:text-xl font-black tracking-tight uppercase">{language}</span>
-                            </div>
-                        </div>
-
-                        <div className="flex flex-col md:flex-row gap-6 w-full max-w-2xl">
-                            <div className="flex-1 p-8 rounded-[32px] bg-gradient-to-br from-[#d000ff] via-[#8000ff] to-[#2000ff] border-b-2 border-r-1 border-[#00ff41]">
-                                <h3 className="text-xl font-black text-center mb-8 tracking-widest uppercase">Weak Areas</h3>
-                                <ul className="space-y-6">
-                                    {weakAreas.map((area: string, index: number) => (
-                                        <li key={index} className="flex items-center gap-4 group">
-                                            <div className="w-4 h-4 rounded-full bg-red-600 border-2 border-black shadow-[0_0_10px_rgba(220,38,38,0.8)]" />
-                                            <span className="text-lg font-black tracking-tight uppercase group-hover:translate-x-1 transition-transform">{area}</span>
-                                        </li>
-                                    ))}
-                                </ul>
-                            </div>
-
-                            <div className="flex-1 p-8 rounded-[32px] flex flex-col items-center justify-between bg-gradient-to-br from-[#d000ff] via-[#8000ff] to-[#2000ff] border-b-2 border-r-1 border-[#00ff41]">
-                                <div className="relative w-32 h-32 rounded-full border-4 border-black/30 overflow-hidden shadow-2xl bg-gray-800">
-                                    {professor.avatarUrl ? (
-                                        <Image
-                                            src={professor.avatarUrl}
-                                            alt={professor.name || "Professor"}
-                                            width={128}
-                                            height={128}
-                                            className="w-full h-full object-cover"
-                                        />
-                                    ) : (
-                                        <div className="w-full h-full flex items-center justify-center bg-gray-700 text-white font-bold">
-                                            No Image
-                                        </div>
-                                    )}
-                                </div>
-                                <h3 className="text-lg font-black tracking-tighter uppercase mt-4">{professor.name || "Professor"}</h3>
-                            </div>
-                        </div>
-                    </div>
                 </div>
-            </section>
+
+                {/* ─── Bottom Buttons ─── */}
+                <div style={{
+                    display: "flex",
+                    justifyContent: "center",
+                    gap: 24,
+                    marginTop: 40,
+                }}>
+                    <Link href="/onboarding" className="btn-outline">
+                        Resubmit Form
+                    </Link>
+                    <Link href="/action-plan" className="btn-filled">
+                        Action Plan
+                    </Link>
+                </div>
+            </main>
         </div>
     );
 }

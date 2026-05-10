@@ -59,7 +59,7 @@ const SignInPage = () => {
       });
 
       if (profileRes.ok) {
-        router.push("/dashboard"); // Already completed onboarding
+        router.push("/dashboard"); // Already completed onboarding → Dashboard
       } else {
         router.push("/onboarding"); // Needs to complete onboarding
       }
