@@ -18,13 +18,13 @@ interface ProfileData {
         nickname: string;
         section: string;
         avatarUrl: string | null;
+        programmingLanguage: string;
         stuckPoint: string;
         problemApproach: string;
         loopVisualization: string;
         errorReaction: string;
         copyFrequency: string;
         firstMove: string;
-        learningMotivation: string[];
     };
     stats: {
         testsAttempted: number;
@@ -192,6 +192,32 @@ export default function DashboardPage() {
                     from { transform: translateY(-100%); opacity: 0; }
                     to { transform: translateY(0); opacity: 1; }
                 }
+                .dash-nav {
+                    width: 100%;
+                    padding: 12px 24px;
+                    display: flex;
+                    align-items: center;
+                    gap: 28px;
+                    background: linear-gradient(90deg, #1a1050 0%, #2a1a6e 50%, #1a1050 100%);
+                    border-bottom: 1px solid rgba(0, 100, 255, 0.2);
+                    flex-wrap: wrap;
+                }
+                .dash-nav-identity {
+                    display: flex;
+                    align-items: center;
+                    gap: 10px;
+                }
+                .dash-nav-section {
+                    font-weight: 600;
+                    font-size: 15px;
+                    color: rgba(255,255,255,0.7);
+                    letter-spacing: 0.5px;
+                }
+                .dash-nav-links {
+                    display: flex;
+                    gap: 24px;
+                    margin-left: auto;
+                }
                 .nav-link {
                     color: rgba(255,255,255,0.85);
                     text-decoration: none;
@@ -224,6 +250,30 @@ export default function DashboardPage() {
                     border-radius: 4px;
                     overflow: hidden;
                     border: 1px solid rgba(0, 100, 255, 0.3);
+                }
+                .dash-grid {
+                    display: grid;
+                    grid-template-columns: 200px 1fr 1fr;
+                    gap: 24px;
+                    align-items: start;
+                }
+                .dash-stats-col {
+                    display: flex;
+                    flex-direction: column;
+                    gap: 28px;
+                    padding-top: 8px;
+                }
+                .dash-center-col {
+                    display: flex;
+                    flex-direction: column;
+                    gap: 24px;
+                }
+                .dash-bottom-btns {
+                    display: flex;
+                    justify-content: center;
+                    gap: 24px;
+                    margin-top: 40px;
+                    flex-wrap: wrap;
                 }
                 .btn-outline {
                     padding: 12px 36px;
@@ -260,20 +310,61 @@ export default function DashboardPage() {
                     background: linear-gradient(135deg, #2a2a8e, #3a2aae);
                     box-shadow: 0 0 20px rgba(0, 120, 255, 0.3);
                 }
+                @media (max-width: 768px) {
+                    .dash-nav {
+                        padding: 10px 16px;
+                        gap: 12px;
+                        justify-content: center;
+                    }
+                    .dash-nav-section {
+                        display: none;
+                    }
+                    .dash-nav-links {
+                        margin-left: 0;
+                        width: 100%;
+                        justify-content: center;
+                        gap: 12px;
+                        flex-wrap: wrap;
+                    }
+                    .nav-link {
+                        font-size: 13px;
+                        padding: 4px 2px;
+                    }
+                    .dash-grid {
+                        grid-template-columns: 1fr;
+                        gap: 20px;
+                    }
+                    .dash-stats-col {
+                        display: grid;
+                        grid-template-columns: repeat(3, 1fr);
+                        gap: 12px;
+                        padding-top: 0;
+                    }
+                    .dash-bottom-btns {
+                        gap: 12px;
+                        margin-top: 28px;
+                    }
+                    .btn-outline, .btn-filled {
+                        padding: 10px 24px;
+                        font-size: 14px;
+                    }
+                }
+                @media (max-width: 480px) {
+                    .dash-stats-col {
+                        grid-template-columns: 1fr;
+                    }
+                    .dash-nav-links {
+                        gap: 8px;
+                    }
+                    .nav-link {
+                        font-size: 12px;
+                    }
+                }
             `}</style>
 
             {/* ─── Navbar ─── */}
-            <nav style={{
-                width: "100%",
-                padding: "12px 24px",
-                display: "flex",
-                alignItems: "center",
-                gap: 28,
-                background: "linear-gradient(90deg, #1a1050 0%, #2a1a6e 50%, #1a1050 100%)",
-                borderBottom: "1px solid rgba(0, 100, 255, 0.2)",
-            }}>
-                {/* Avatar + Name */}
-                <div style={{ display: "flex", alignItems: "center", gap: 10 }}>
+            <nav className="dash-nav">
+                <div className="dash-nav-identity">
                     <div style={{
                         width: 42,
                         height: 42,
@@ -286,30 +377,16 @@ export default function DashboardPage() {
                         fontSize: 18,
                         border: "2px solid rgba(255,255,255,0.2)",
                         overflow: "hidden",
+                        flexShrink: 0,
                     }}>
-                        {/* onboarding?.avatarUrl ? (
-                            <Image 
-                                src={onboarding.avatarUrl} 
-                                alt={nickname} 
-                                width={42} 
-                                height={42} 
-                                style={{ width: "100%", height: "100%", objectFit: "cover" }}
-                            />
-                        ) : (
-                            initial
-                        ) */}
                         {initial}
                     </div>
                     <span style={{ fontWeight: 800, fontSize: 20, color: "white" }}>{nickname}</span>
                 </div>
 
-                {/* Section */}
-                <span style={{ fontWeight: 600, fontSize: 15, color: "rgba(255,255,255,0.7)", letterSpacing: 0.5 }}>
-                    {section}
-                </span>
+                <span className="dash-nav-section">{section}</span>
 
-                {/* Nav Links */}
-                <div style={{ display: "flex", gap: 24, marginLeft: "auto" }}>
+                <div className="dash-nav-links">
                     <Link href="/dashboard" className="nav-link nav-link-active">Dashboard</Link>
                     <Link href="/action-plan" className="nav-link">Action Plan</Link>
                     <Link href="#" className="nav-link">Tests Results</Link>
@@ -340,14 +417,9 @@ export default function DashboardPage() {
                 padding: "32px 20px",
             }}>
                 {/* 3-Column Grid */}
-                <div style={{
-                    display: "grid",
-                    gridTemplateColumns: "200px 1fr 1fr",
-                    gap: 24,
-                    alignItems: "start",
-                }}>
+                <div className="dash-grid">
                     {/* ─── Left Column: Stats ─── */}
-                    <div style={{ display: "flex", flexDirection: "column" as const, gap: 28, paddingTop: 8 }}>
+                    <div className="dash-stats-col">
                         {/* Tests Attempted */}
                         <div style={{ textAlign: "center" }}>
                             <p style={{ fontSize: 14, fontWeight: 700, color: "rgba(255,255,255,0.85)", marginBottom: 4 }}>
@@ -407,7 +479,7 @@ export default function DashboardPage() {
                     </div>
 
                     {/* ─── Center Column: Rote Memory + Semester Readiness ─── */}
-                    <div style={{ display: "flex", flexDirection: "column" as const, gap: 24 }}>
+                    <div className="dash-center-col">
                         {/* Rote Memory Card */}
                         <div className="glow-card" style={{ padding: 28, textAlign: "center" }}>
                             <h3 style={{ fontSize: 18, fontWeight: 700, marginBottom: 12, color: "rgba(255,255,255,0.9)" }}>
@@ -516,12 +588,7 @@ export default function DashboardPage() {
                 </div>
 
                 {/* ─── Bottom Buttons ─── */}
-                <div style={{
-                    display: "flex",
-                    justifyContent: "center",
-                    gap: 24,
-                    marginTop: 40,
-                }}>
+                <div className="dash-bottom-btns">
                     <Link href="/onboarding" className="btn-outline">
                         Resubmit Form
                     </Link>

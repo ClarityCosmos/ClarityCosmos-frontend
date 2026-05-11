@@ -41,6 +41,24 @@ const QUESTIONS = [
             "/assets/avatar_3.jpeg",
         ],
     },
+    {
+        id: "programmingLanguage",
+        title: "Which programming language are you most comfortable with?",
+        section: "Section 1: Identity",
+        type: "radio" as const,
+        options: [
+            "C++",
+            "Java",
+            "Python",
+            "JavaScript",
+            "C",
+            "C#",
+            "Go",
+            "Rust",
+            "Kotlin",
+            "Swift",
+        ],
+    },
     // ─── Section 2: The Mental Blueprint ───
     {
         id: "stuckPoint",
@@ -113,19 +131,6 @@ const QUESTIONS = [
             "I take a pen and paper to plan the logic.",
             "I search for a tutorial to follow step-by-step.",
             "I wait for instructions on what the first line should be.",
-        ],
-    },
-    {
-        id: "learningMotivation",
-        title: "Why are you learning Python at PGC Shahdara?",
-        section: "Section 4: Structural Foundation",
-        subtitle: "Select all that apply",
-        type: "checkbox" as const,
-        options: [
-            "I want to build AI, Apps, or Games in the future.",
-            "I want to ensure I get the highest possible marks in my Semester Exams.",
-            "It's just a required subject for my degree.",
-            "I'm curious about how technology works.",
         ],
     },
 ];
@@ -217,13 +222,13 @@ export default function OnboardingPage() {
             nickname: answers.nickname,
             section: answers.section,
             avatarUrl: answers.avatarUrl || null,
+            programmingLanguage: answers.programmingLanguage,
             stuckPoint: answers.stuckPoint,
             problemApproach: answers.problemApproach,
             loopVisualization: answers.loopVisualization,
             errorReaction: answers.errorReaction,
             copyFrequency: answers.copyFrequency,
             firstMove: answers.firstMove,
-            learningMotivation: answers.learningMotivation,
         };
 
         try {

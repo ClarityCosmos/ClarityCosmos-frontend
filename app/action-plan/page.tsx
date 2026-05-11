@@ -155,6 +155,32 @@ export default function ActionPlanPage() {
             fontFamily: "'Segoe UI', 'Inter', sans-serif",
         }}>
             <style>{`
+                .ap-nav {
+                    width: 100%;
+                    padding: 12px 24px;
+                    display: flex;
+                    align-items: center;
+                    gap: 28px;
+                    background: linear-gradient(90deg, #1a1050 0%, #2a1a6e 50%, #1a1050 100%);
+                    border-bottom: 1px solid rgba(0, 100, 255, 0.2);
+                    flex-wrap: wrap;
+                }
+                .ap-nav-identity {
+                    display: flex;
+                    align-items: center;
+                    gap: 10px;
+                }
+                .ap-nav-section {
+                    font-weight: 600;
+                    font-size: 15px;
+                    color: rgba(255,255,255,0.7);
+                    letter-spacing: 0.5px;
+                }
+                .ap-nav-links {
+                    display: flex;
+                    gap: 24px;
+                    margin-left: auto;
+                }
                 .nav-link {
                     color: rgba(255,255,255,0.85);
                     text-decoration: none;
@@ -174,6 +200,35 @@ export default function ActionPlanPage() {
                     text-underline-offset: 6px;
                     text-decoration-thickness: 2px;
                 }
+                .ap-content {
+                    display: flex;
+                    justify-content: center;
+                    padding: 24px 16px;
+                }
+                .ap-inner {
+                    width: 100%;
+                    max-width: 1100px;
+                    display: flex;
+                    flex-direction: column;
+                    gap: 40px;
+                    align-items: center;
+                }
+                .ap-title {
+                    font-size: 32px;
+                    font-weight: 800;
+                    margin: 0;
+                    text-align: center;
+                }
+                .ap-video-wrapper {
+                    width: 100%;
+                    max-width: 900px;
+                    aspect-ratio: 16/9;
+                    border-radius: 16px;
+                    padding: 2px;
+                    background: linear-gradient(90deg, #ec4899, #3b82f6);
+                    position: relative;
+                    overflow: hidden;
+                }
                 @keyframes shimmer {
                     0% { transform: translateX(-50%); }
                     100% { transform: translateX(50%); }
@@ -181,20 +236,52 @@ export default function ActionPlanPage() {
                 .animate-shimmer {
                     animation: shimmer 2.2s linear infinite;
                 }
+                @media (max-width: 768px) {
+                    .ap-nav {
+                        padding: 10px 16px;
+                        gap: 12px;
+                        justify-content: center;
+                    }
+                    .ap-nav-section {
+                        display: none;
+                    }
+                    .ap-nav-links {
+                        margin-left: 0;
+                        width: 100%;
+                        justify-content: center;
+                        gap: 12px;
+                        flex-wrap: wrap;
+                    }
+                    .nav-link {
+                        font-size: 13px;
+                        padding: 4px 2px;
+                    }
+                    .ap-title {
+                        font-size: 22px;
+                        padding: 0 8px;
+                    }
+                    .ap-content {
+                        padding: 16px 12px;
+                    }
+                    .ap-inner {
+                        gap: 24px;
+                    }
+                }
+                @media (max-width: 480px) {
+                    .ap-title {
+                        font-size: 18px;
+                    }
+                    .ap-nav-links {
+                        gap: 8px;
+                    }
+                    .nav-link {
+                        font-size: 12px;
+                    }
+                }
             `}</style>
 
-            {/* ─── Navbar ─── */}
-            <nav style={{
-                width: "100%",
-                padding: "12px 24px",
-                display: "flex",
-                alignItems: "center",
-                gap: 28,
-                background: "linear-gradient(90deg, #1a1050 0%, #2a1a6e 50%, #1a1050 100%)",
-                borderBottom: "1px solid rgba(0, 100, 255, 0.2)",
-            }}>
-                {/* Avatar + Name */}
-                <div style={{ display: "flex", alignItems: "center", gap: 10 }}>
+            <nav className="ap-nav">
+                <div className="ap-nav-identity">
                     <div style={{
                         width: 42,
                         height: 42,
@@ -207,30 +294,16 @@ export default function ActionPlanPage() {
                         fontSize: 18,
                         border: "2px solid rgba(255,255,255,0.2)",
                         overflow: "hidden",
+                        flexShrink: 0,
                     }}>
-                        {/* data?.avatarUrl ? (
-                            <Image 
-                                src={data.avatarUrl} 
-                                alt={userName} 
-                                width={42} 
-                                height={42} 
-                                style={{ width: "100%", height: "100%", objectFit: "cover" }}
-                            />
-                        ) : (
-                            initial
-                        ) */}
                         {initial}
                     </div>
                     <span style={{ fontWeight: 800, fontSize: 20, color: "white" }}>{userName}</span>
                 </div>
 
-                {/* Section */}
-                <span style={{ fontWeight: 600, fontSize: 15, color: "rgba(255,255,255,0.7)", letterSpacing: 0.5 }}>
-                    {section}
-                </span>
+                <span className="ap-nav-section">{section}</span>
 
-                {/* Nav Links */}
-                <div style={{ display: "flex", gap: 24, marginLeft: "auto" }}>
+                <div className="ap-nav-links">
                     <Link href="/dashboard" className="nav-link">Dashboard</Link>
                     <Link href="/action-plan" className="nav-link nav-link-active">Action Plan</Link>
                     <Link href="#" className="nav-link">Tests Results</Link>
@@ -239,27 +312,16 @@ export default function ActionPlanPage() {
             </nav>
 
             {/* ─── Main Content ─── */}
-            <section style={{ display: "flex", justifyContent: "center", padding: "24px 16px" }}>
-                <div style={{ width: "100%", maxWidth: 1100, display: "flex", flexDirection: "column" as const, gap: 40, alignItems: "center" }}>
-                    {/* Title */}
+            <section className="ap-content">
+                <div className="ap-inner">
                     <div style={{ textAlign: "center" }}>
-                        <h1 style={{ fontSize: 32, fontWeight: 800, margin: 0 }}>
+                        <h1 className="ap-title">
                             <span>{userName.toUpperCase()}</span>, YOUR DSA ROADMAP IS READY!
                         </h1>
                     </div>
 
-                    {/* Video Player */}
-                    <div style={{ display: "flex", justifyContent: "center", position: "relative" as const }}>
-                        <div style={{
-                            width: "100%",
-                            maxWidth: 900,
-                            aspectRatio: "16/9",
-                            borderRadius: 16,
-                            padding: 2,
-                            background: "linear-gradient(90deg, #ec4899, #3b82f6)",
-                            position: "relative" as const,
-                            overflow: "hidden",
-                        }}>
+                    <div style={{ display: "flex", justifyContent: "center", position: "relative" as const, width: "100%" }}>
+                        <div className="ap-video-wrapper">
                             {!videoLoaded && (
                                 <div style={{
                                     position: "absolute" as const,
